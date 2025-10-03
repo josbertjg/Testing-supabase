@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { supabase, DoctorTitle, Doctor } from "../../lib/supabase";
+import { supabase, type DoctorTitle, type Doctor } from "../../lib/supabase";
 import { useParams, Link } from "react-router-dom";
-import { Plus, ArrowLeft, Edit, Trash2 } from "lucide-react";
+import { Plus, ArrowLeft, Trash2 } from "lucide-react";
 
 const DoctorTitles: React.FC = () => {
   const { id } = useParams();

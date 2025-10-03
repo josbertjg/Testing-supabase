@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { supabase, Pathology } from "../../lib/supabase";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { supabase, type Pathology } from "../../lib/supabase";
+import { Plus, Trash2 } from "lucide-react";
 
 const PathologyList: React.FC = () => {
   const [pathologies, setPathologies] = useState<Pathology[]>([]);

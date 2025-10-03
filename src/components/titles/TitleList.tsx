@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { supabase, DoctorTitle, Doctor } from "../../lib/supabase";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { supabase, type DoctorTitle, type Doctor } from "../../lib/supabase";
+import { Plus, Trash2 } from "lucide-react";
 
 const TitleList: React.FC = () => {
   const [titles, setTitles] = useState<(DoctorTitle & { doctor: Doctor })[]>(

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import {
   supabase,
-  Doctor,
-  Pathology,
-  DoctorPathology,
+  type Doctor,
+  type Pathology,
+  type DoctorPathology,
 } from "../../lib/supabase";
 import { useParams, Link } from "react-router-dom";
 import { Plus, ArrowLeft, Trash2 } from "lucide-react";

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { supabase, Procedure } from "../../lib/supabase";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { supabase, type Procedure } from "../../lib/supabase";
+import { Plus, Trash2 } from "lucide-react";
 
 const ProcedureList: React.FC = () => {
   const [procedures, setProcedures] = useState<Procedure[]>([]);

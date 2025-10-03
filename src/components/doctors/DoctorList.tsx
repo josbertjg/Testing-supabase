@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { supabase, Doctor } from "../../lib/supabase";
+import { supabase, type Doctor } from "../../lib/supabase";
 import { Plus, Edit, Eye, Award, Activity, Stethoscope } from "lucide-react";
 import { Link } from "react-router-dom";
 
