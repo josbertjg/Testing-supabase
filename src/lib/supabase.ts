@@ -4,7 +4,17 @@ const supabaseUrl = "https://fynzhfrffhegquakmsiz.supabase.co";
 const supabaseAnonKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5bnpoZnJmZmhlZ3F1YWttc2l6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0NDMwMjAsImV4cCI6MjA3NTAxOTAyMH0.iOuL9AmwrMXxKJulKdqKQU4lVmMzsjXtg0fe24dwa64";
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Crear cliente con configuración de autenticación mejorada
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    // Habilita la persistencia de sesión en localStorage
+    persistSession: true,
+    // Detecta automáticamente si la sesión debe almacenarse
+    autoRefreshToken: true,
+    // Detecta cambios de sesión
+    detectSessionInUrl: true,
+  },
+});
 
 // Tipos para TypeScript
 export interface Patient {

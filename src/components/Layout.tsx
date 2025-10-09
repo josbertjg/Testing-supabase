@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import {
   Users,
   UserCheck,
@@ -9,11 +9,20 @@ import {
   FileText,
   Menu,
   X,
+  LogOut,
 } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
 
 const Layout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/login");
+  };
 
   const navigation = [
     { name: "Pacientes", href: "/patients", icon: Users },
@@ -103,9 +112,19 @@ const Layout: React.FC = () => {
           <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
             <div className="flex flex-1"></div>
             <div className="flex items-center gap-x-4 lg:gap-x-6">
-              <div className="text-sm font-semibold text-gray-900">
-                Sistema de Gestión Médica
+              <div className="text-sm text-gray-900">
+                <p className="font-semibold">
+                  {user?.user_metadata?.name || "Usuario"}
+                </p>
+                <p className="text-xs text-gray-500">{user?.email}</p>
               </div>
+              <button
+                onClick={handleSignOut}
+                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+              >
+                <LogOut className="h-5 w-5" />
+                Cerrar Sesión
+              </button>
             </div>
           </div>
         </div>
