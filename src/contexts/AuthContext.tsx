@@ -1,14 +1,9 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  ReactNode,
-} from "react";
-import { User, Session, AuthError } from "@supabase/supabase-js";
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useEffect, useState, type ReactNode } from "react";
+import type { User, Session, AuthError } from "@supabase/supabase-js";
 import { supabase } from "../lib/supabase";
 
-interface AuthContextType {
+export interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
@@ -24,15 +19,9 @@ interface AuthContextType {
   signOut: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth debe ser usado dentro de AuthProvider");
-  }
-  return context;
-};
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
 interface AuthProviderProps {
   children: ReactNode;
