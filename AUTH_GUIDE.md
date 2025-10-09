@@ -257,11 +257,69 @@ supabase.auth.onAuthStateChange((event, session) => {
 - [x] Validación de formularios
 - [x] Manejo de errores
 - [x] Estados de carga
+- [x] **OAuth con Google implementado**
+- [x] **Registro automático con Google**
+- [x] **Redirección automática al dashboard**
+
+## 🌐 Autenticación con Google OAuth
+
+### ¿Cómo funciona?
+
+1. Usuario hace clic en **"Continuar con Google"**
+2. Es redirigido a la pantalla de consentimiento de Google
+3. Autoriza el acceso a su email y perfil
+4. Google redirige de vuelta a tu app
+5. Supabase crea/actualiza el usuario automáticamente
+6. Usuario es redirigido al dashboard
+
+### Datos que se obtienen de Google
+
+- ✅ Email (verificado)
+- ✅ Nombre completo
+- ✅ Foto de perfil
+- ✅ ID de usuario de Google
+
+### Configuración necesaria
+
+1. **En Google Cloud Console**:
+
+   - Client ID y Client Secret (ya configurados)
+   - Redirect URL: `https://YOUR_PROJECT.supabase.co/auth/v1/callback`
+
+2. **En Supabase Dashboard**:
+
+   - Habilitar Google en Authentication > Providers
+   - Agregar credenciales de Google
+   - Configurar Redirect URLs permitidas
+
+3. **En tu código**:
+   ```typescript
+   // Ya implementado en GoogleButton.tsx
+   await supabase.auth.signInWithOAuth({
+     provider: "google",
+     options: {
+       redirectTo: `${window.location.origin}/`,
+     },
+   });
+   ```
+
+### Ventajas del OAuth con Google
+
+- 🚀 **Sin contraseña**: No necesitas gestionar contraseñas
+- ✅ **Email verificado**: Google ya verificó el email
+- 🔐 **Más seguro**: Usa los sistemas de seguridad de Google
+- ⚡ **Más rápido**: Registro en un solo clic
+- 📸 **Foto de perfil**: Obtienes la foto automáticamente
+
+### Documentación completa
+
+Para más detalles, consulta [GOOGLE_OAUTH_GUIDE.md](./GOOGLE_OAUTH_GUIDE.md)
 
 ## 🔮 Próximos Pasos (Opcional)
 
 1. **Recuperación de Contraseña**: Implementar flujo de "olvidé mi contraseña"
-2. **Autenticación con OAuth**: Google, GitHub, etc.
+2. **Más proveedores OAuth**: GitHub, Microsoft, Facebook, Apple
 3. **Autenticación de dos factores (2FA)**
 4. **Roles y permisos**: Diferenciar entre pacientes, doctores y administradores
 5. **Row Level Security (RLS)**: Políticas de seguridad a nivel de base de datos
+6. **Vincular cuentas**: Permitir vincular Google a cuenta existente

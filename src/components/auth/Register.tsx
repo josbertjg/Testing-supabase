@@ -1,6 +1,7 @@
 import { useState, FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import GoogleButton from "./GoogleButton";
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -157,6 +158,19 @@ export default function Register() {
               {loading ? "Registrando..." : "Crear Cuenta"}
             </button>
           </div>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-gray-50 text-gray-500">
+                O regístrate con
+              </span>
+            </div>
+          </div>
+
+          <GoogleButton mode="register" />
 
           <div className="text-center">
             <p className="text-sm text-gray-600">
