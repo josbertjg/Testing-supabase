@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { supabase, supabaseUrl } from "../../lib/supabase";
 import type { Pathology, Doctor } from "../../lib/supabase";
+import GooglePlacesAutocomplete from "./GooglePlacesAutocomplete";
 
 export default function DoctorSearch() {
   const [pathologies, setPathologies] = useState<Pathology[]>([]);
@@ -191,6 +192,12 @@ export default function DoctorSearch() {
     }
   };
 
+  const handlePlaceSelect = (place: google.maps.places.PlaceResult | null) => {
+    if (place) {
+      console.log("📍 Lugar seleccionado en DoctorSearch:", place);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -216,6 +223,9 @@ export default function DoctorSearch() {
           </div>
         </div>
       )}
+
+      {/* Google Places Autocomplete */}
+      <GooglePlacesAutocomplete onPlaceSelect={handlePlaceSelect} />
 
       {/* Autocomplete de Patologías */}
       <div className="bg-white shadow rounded-lg p-6">
