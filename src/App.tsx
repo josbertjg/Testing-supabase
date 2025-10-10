@@ -16,6 +16,7 @@ import DoctorForm from "./components/doctors/DoctorForm";
 import DoctorTitles from "./components/doctors/DoctorTitles";
 import DoctorPathologies from "./components/doctors/DoctorPathologies";
 import DoctorProcedures from "./components/doctors/DoctorProcedures";
+import DoctorSearch from "./components/doctors/DoctorSearch";
 import PathologyList from "./components/pathologies/PathologyList";
 import ProcedureList from "./components/procedures/ProcedureList";
 import TitleList from "./components/titles/TitleList";
@@ -58,6 +59,7 @@ function App() {
             <Route path="titles" element={<TitleList />} />
             <Route path="pathologies" element={<PathologyList />} />
             <Route path="procedures" element={<ProcedureList />} />
+            <Route path="doctor-search" element={<DoctorSearch />} />
             <Route
               path="reports"
               element={

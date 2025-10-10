@@ -27,6 +27,7 @@ const Layout: React.FC = () => {
   const navigation = [
     { name: "Pacientes", href: "/patients", icon: Users },
     { name: "Médicos", href: "/doctors", icon: UserCheck },
+    { name: "Búsqueda de Doctores", href: "/doctor-search", icon: UserCheck },
     { name: "Títulos", href: "/titles", icon: Award },
     { name: "Patologías", href: "/pathologies", icon: Activity },
     { name: "Procedimientos", href: "/procedures", icon: Stethoscope },

@@ -23,6 +23,9 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
 });
 
+// Exportar URL para uso en edge functions
+export { supabaseUrl };
+
 // Tipos para TypeScript
 export interface Patient {
   id: string;
