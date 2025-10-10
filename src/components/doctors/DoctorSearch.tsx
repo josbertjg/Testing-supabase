@@ -24,6 +24,7 @@ export default function DoctorSearch() {
   const [searching, setSearching] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -83,9 +84,9 @@ export default function DoctorSearch() {
 
       if (error) throw error;
       setPathologies(data || []);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error al cargar patologías:", err);
-      setError(err.message);
+      setError(err instanceof Error ? err.message : "Error desconocido");
     } finally {
       setLoading(false);
     }
@@ -124,9 +125,61 @@ export default function DoctorSearch() {
       const data = await response.json();
       console.log("✅ Doctores encontrados:", data);
       setDoctors(data || []);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error al buscar doctores:", err);
-      setError(err.message || "Error al buscar doctores");
+      setError(err instanceof Error ? err.message : "Error al buscar doctores");
+      setDoctors([]);
+    } finally {
+      setSearching(false);
+    }
+  };
+
+  const searchDoctorsByCity = async (city: string) => {
+    if (!city) {
+      setDoctors([]);
+      return;
+    }
+
+    try {
+      setSearching(true);
+      setError(null);
+      console.log("🔍 Buscando doctores en la ciudad:", city);
+
+      // Buscar ubicaciones de doctores en la ciudad seleccionada
+      const { data: locations, error: locError } = await supabase
+        .from("doctor_locations")
+        .select("doctor_id")
+        .ilike("city", city);
+
+      if (locError) throw locError;
+
+      if (!locations || locations.length === 0) {
+        console.log("❌ No se encontraron ubicaciones en esta ciudad");
+        setDoctors([]);
+        return;
+      }
+
+      // Obtener IDs únicos de doctores
+      const doctorIds = [...new Set(locations.map((loc) => loc.doctor_id))];
+      console.log("📍 IDs de doctores encontrados:", doctorIds);
+
+      // Buscar información de los doctores
+      const { data: doctorsData, error: docError } = await supabase
+        .from("doctors")
+        .select("*")
+        .in("id", doctorIds);
+
+      if (docError) throw docError;
+
+      console.log("✅ Doctores encontrados en la ciudad:", doctorsData);
+      setDoctors(doctorsData || []);
+    } catch (err: unknown) {
+      console.error("Error al buscar doctores por ciudad:", err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Error al buscar doctores por ciudad"
+      );
       setDoctors([]);
     } finally {
       setSearching(false);
@@ -195,6 +248,40 @@ export default function DoctorSearch() {
   const handlePlaceSelect = (place: google.maps.places.PlaceResult | null) => {
     if (place) {
       console.log("📍 Lugar seleccionado en DoctorSearch:", place);
+
+      // Extraer la ciudad de los componentes de dirección
+      const addressComponents = place.address_components;
+      let city = null;
+
+      if (addressComponents) {
+        // Buscar el componente que sea "locality" (ciudad)
+        const cityComponent = addressComponents.find((component) =>
+          component.types.includes("locality")
+        );
+
+        if (cityComponent) {
+          city = cityComponent.long_name;
+        } else {
+          // Si no hay "locality", intentar con "administrative_area_level_2"
+          const adminComponent = addressComponents.find((component) =>
+            component.types.includes("administrative_area_level_2")
+          );
+          if (adminComponent) {
+            city = adminComponent.long_name;
+          }
+        }
+      }
+
+      console.log("🏙️ Ciudad extraída:", city);
+
+      if (city) {
+        setSelectedCity(city);
+        searchDoctorsByCity(city);
+      } else {
+        setError(
+          "No se pudo determinar la ciudad de la ubicación seleccionada"
+        );
+      }
     }
   };
 
@@ -226,6 +313,16 @@ export default function DoctorSearch() {
 
       {/* Google Places Autocomplete */}
       <GooglePlacesAutocomplete onPlaceSelect={handlePlaceSelect} />
+
+      {/* Indicador de ciudad seleccionada */}
+      {selectedCity && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <p className="text-sm text-blue-800">
+            🏙️ Buscando doctores en:{" "}
+            <span className="font-semibold">{selectedCity}</span>
+          </p>
+        </div>
+      )}
 
       {/* Autocomplete de Patologías */}
       <div className="bg-white shadow rounded-lg p-6">
@@ -339,17 +436,27 @@ export default function DoctorSearch() {
       )}
 
       {/* Results */}
-      {!searching && selectedPathology !== null && doctors.length === 0 && (
-        <div className="text-center py-12 bg-white shadow rounded-lg">
-          <Stethoscope className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-2 text-sm font-medium text-gray-900">
-            No se encontraron doctores
-          </h3>
-          <p className="mt-1 text-sm text-gray-500">
-            No hay doctores especializados en esta patología.
-          </p>
-        </div>
-      )}
+      {!searching &&
+        (selectedPathology !== null || selectedCity !== null) &&
+        doctors.length === 0 && (
+          <div className="text-center py-12 bg-white shadow rounded-lg">
+            <Stethoscope className="mx-auto h-12 w-12 text-gray-400" />
+            <h3 className="mt-2 text-sm font-medium text-gray-900">
+              No se encontraron doctores
+            </h3>
+            <p className="mt-1 text-sm text-gray-500">
+              {selectedPathology &&
+                !selectedCity &&
+                "No hay doctores especializados en esta patología."}
+              {selectedCity &&
+                !selectedPathology &&
+                `No hay doctores en ${selectedCity}.`}
+              {selectedPathology &&
+                selectedCity &&
+                `No hay doctores en ${selectedCity} especializados en esta patología.`}
+            </p>
+          </div>
+        )}
 
       {/* Doctors List */}
       {!searching && doctors.length > 0 && (
@@ -401,15 +508,15 @@ export default function DoctorSearch() {
       )}
 
       {/* Initial State */}
-      {!searching && selectedPathology === null && (
+      {!searching && selectedPathology === null && selectedCity === null && (
         <div className="text-center py-12 bg-white shadow rounded-lg">
           <Search className="mx-auto h-12 w-12 text-gray-400" />
           <h3 className="mt-2 text-sm font-medium text-gray-900">
-            Selecciona una patología
+            Busca doctores por ubicación o patología
           </h3>
           <p className="mt-1 text-sm text-gray-500">
-            Elige una patología del selector para ver los doctores
-            especializados.
+            Selecciona una ubicación o elige una patología para ver los doctores
+            disponibles.
           </p>
         </div>
       )}
