@@ -3,6 +3,7 @@ import { supabase } from "../../lib/supabase";
 import { useNavigate, useParams } from "react-router-dom";
 import { Save, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import DoctorLocations from "./DoctorLocations";
 
 const DoctorForm: React.FC = () => {
   const navigate = useNavigate();
@@ -288,6 +289,13 @@ const DoctorForm: React.FC = () => {
           </button>
         </div>
       </form>
+
+      {/* Sección de Ubicaciones - Solo visible al editar */}
+      {isEditing && (
+        <div className="mt-8">
+          <DoctorLocations />
+        </div>
+      )}
     </div>
   );
 };

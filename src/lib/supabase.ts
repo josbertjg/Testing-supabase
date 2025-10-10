@@ -79,6 +79,20 @@ export interface Pathology {
   created_at: string;
 }
 
+export interface DoctorLocation {
+  id: string;
+  doctor_id: string;
+  place_id: string;
+  formatted_address: string;
+  latitude: number;
+  longitude: number;
+  city?: string;
+  region?: string;
+  country?: string;
+  created_at: string;
+  updated_at?: string;
+}
+
 export interface DoctorProcedure {
   id: string;
   doctor_id: string;
