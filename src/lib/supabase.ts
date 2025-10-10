@@ -48,6 +48,7 @@ export interface Doctor {
   identity_document?: string;
   specialty?: string;
   experience_description?: string;
+  profile_photo_url?: string;
   created_at: string;
   updated_at: string;
 }

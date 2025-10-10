@@ -7,6 +7,7 @@ import {
   Stethoscope,
   ChevronDown,
   X,
+  User,
 } from "lucide-react";
 import { supabase, supabaseUrl } from "../../lib/supabase";
 import type { Pathology, Doctor } from "../../lib/supabase";
@@ -472,8 +473,24 @@ export default function DoctorSearch() {
                 key={doctor.id}
                 className="px-4 py-4 sm:px-6 hover:bg-gray-50"
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
+                <div className="flex items-start space-x-4">
+                  {/* Foto de perfil */}
+                  <div className="flex-shrink-0">
+                    {doctor.profile_photo_url ? (
+                      <img
+                        src={doctor.profile_photo_url}
+                        alt={`${doctor.first_name} ${doctor.last_name}`}
+                        className="h-16 w-16 rounded-full object-cover border-2 border-indigo-200"
+                      />
+                    ) : (
+                      <div className="h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center border-2 border-gray-300">
+                        <User className="h-8 w-8 text-gray-400" />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Información del doctor */}
+                  <div className="flex-1 min-w-0">
                     <div className="flex items-center">
                       <UserCheck className="h-5 w-5 text-indigo-600 mr-2" />
                       <p className="text-sm font-medium text-indigo-600">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { supabase, type DoctorLocation, type Doctor } from "../../lib/supabase";
 import { useParams } from "react-router-dom";
 import { MapPin, Plus, X, Loader2 } from "lucide-react";
@@ -14,14 +14,7 @@ const DoctorLocations: React.FC = () => {
   const [showAddLocation, setShowAddLocation] = useState(false);
   const [addingLocation, setAddingLocation] = useState(false);
 
-  useEffect(() => {
-    if (id) {
-      fetchDoctor();
-      fetchLocations();
-    }
-  }, [id]);
-
-  const fetchDoctor = async () => {
+  const fetchDoctor = useCallback(async () => {
     if (!id) return;
 
     try {
@@ -36,9 +29,9 @@ const DoctorLocations: React.FC = () => {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error al cargar médico");
     }
-  };
+  }, [id]);
 
-  const fetchLocations = async () => {
+  const fetchLocations = useCallback(async () => {
     if (!id) return;
 
     try {
@@ -58,7 +51,14 @@ const DoctorLocations: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    if (id) {
+      fetchDoctor();
+      fetchLocations();
+    }
+  }, [id, fetchDoctor, fetchLocations]);
 
   const handleAddLocation = async (
     place: google.maps.places.PlaceResult | null
